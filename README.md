@@ -99,24 +99,17 @@ If you find this dataset useful, please consider **[upvoting on Kaggle](https://
 ✅ **Control**: Server-side validation prevents API abuse  
 ✅ **Scalability**: Easy to scale both frontend and backend independently  
 
-### Recent Improvements (Feb 2026)
-- ✅ Fixed frontend to use secure proxy instead of direct API calls
-- ✅ Implemented conversation memory for context-aware recommendations
-- ✅ Added comprehensive request validation and error handling
-- ✅ Created startup scripts for easy setup (Windows & Unix)
-- ✅ Enhanced documentation with troubleshooting guides
-- ✅ Improved CORS configuration for production readiness
+
 
 ## 📁 Project Structure
 
 ```
-project-ai/
+CineMatch-ai/
 │
 ├── 🎬 movie-recommender-app/        (React Frontend - Port 3000)
 │   ├── public/
 │   │   ├── index.html               (HTML template)
 │   │   ├── movies_dataset.csv       (10K movies from Kaggle/TMDB dataset)
-│   │   └── package.json             (images & assets)
 │   ├── src/
 │   │   ├── App.js                   (Main React component)
 │   │   ├── index.js                 (Entry point)
@@ -264,76 +257,6 @@ For detailed setup, configuration, troubleshooting, and more:
 - Combine both approaches for best results
 - Read complete movie information (ratings, overview, cast)
 
-## 🔐 Security Features
-
-✅ **API Key Protection**
-- API keys stored on server only
-- Frontend never sees credentials
-- Uses secure proxy pattern
-
-✅ **CORS Protection**
-- Whitelist allowed origins
-- Prevent unauthorized access
-- Configurable in `.env`
-
-✅ **Request Validation**
-- Validates message format
-- Sanitizes user input
-- Error handling
-
-✅ **Rate Limiting Ready**
-- Easy to add rate limiting
-- Prevents API abuse
-- Configurable thresholds
-
-## 📊 API Endpoints (Proxy Server)
-
-### Health Check
-```bash
-curl http://localhost:3001/health
-```
-Response:
-```json
-{
-  "status": "ok",
-  "service": "CineMatch AI Proxy",
-  "apiKey": "✅ Configured"
-}
-```
-
-### Chat Completion (Powered by Gemma 3n 4B via AiML API)
-```bash
-curl -X POST http://localhost:3001/api/openai/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-3.5-turbo",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Recommend a funny movie"
-      }
-    ]
-  }'
-```
-
-Response:
-```json
-{
-  "choices": [
-    {
-      "message": {
-        "role": "assistant",
-        "content": "Here are some funny movies I recommend: Superbad (2007), The Grand Budapest Hotel (2014), and Knives Out (2019)..."
-      }
-    }
-  ],
-  "usage": {
-    "prompt_tokens": 15,
-    "completion_tokens": 87,
-    "total_tokens": 102
-  }
-}
-```
 
 ### How It Works
 1. Frontend sends chat message to **http://localhost:3001/api/openai/chat**
@@ -408,59 +331,8 @@ taskkill /PID <PID> /F
 lsof -ti:3001 | xargs kill -9
 ```
 
-### Common Error: "Invalid or empty messages"
-- Ensure you're sending proper message format to `/api/openai/chat` endpoint
-- Messages must be an array with at least one message object
-- Each message needs `role` ("user" or "assistant") and `content` fields
 
-## 📈 Performance
 
-- **Movie loading**: ~1 second for 10,000 movies
-- **Search response**: <100ms for filtered results
-- **AI response**: 2-5 seconds depending on API latency
-- **Chat streaming**: Real-time via OpenAI streaming
-
-## 🚀 Deployment
-
-### Deploy Backend (Proxy Server)
-The proxy server is the crucial component - it keeps your API key secure and handles all AI requests.
-
-**Options:**
-- **Heroku**: `git push heroku main`
-- **Railway.app**: Connect GitHub repo, auto-deploys
-- **Render.com**: Managed platform, easy setup
-- **AWS Lambda**: Serverless option for low traffic
-- **Your own VPS**: Full control with a Linux server
-
-**Important**: Always set `AIML_API_KEY` in your hosting platform's environment variables.
-
-### Deploy Frontend (React App)
-The frontend is a static app that connects to your deployed backend.
-
-**Options:**
-- **Vercel**: `vercel deploy` (Recommended - made by Next.js creators)
-- **Netlify**: `netlify deploy` (Great for React CRA)
-- **GitHub Pages**: Free static hosting (for public projects)
-- **AWS S3 + CloudFront**: Scalable static hosting
-- **Firebase Hosting**: Google's static hosting solution
-
-**Before deploying front-end**, update the API URL in `.env.local`:
-```env
-REACT_APP_API_URL=https://your-deployed-proxy-url.com
-```
-
-### Full Deployment Example (Railway.app)
-1. Deploy backend first:
-   - Push repo to GitHub
-   - Connect to Railway, select the `cinematch-ai-proxy` directory
-   - Add environment variable: `AIML_API_KEY=your-key`
-   - Get the deployed URL (e.g., `https://app-xyz.railway.app`)
-2. Deploy frontend:
-   - Connect frontend folder to another Railway service
-   - Add `REACT_APP_API_URL=https://app-xyz.railway.app`
-   - Deploy
-
-Both services now work in production with Gemma 3n 4B powering all recommendations!
 
 ## 📝 Environment Variables
 
@@ -478,19 +350,6 @@ Both services now work in production with Gemma 3n 4B powering all recommendatio
 | `REACT_APP_API_URL` | NO | http://localhost:3001 | Backend proxy server URL |
 | `REACT_APP_MOVIES_CSV_PATH` | NO | /movies_dataset.csv | Path to movies dataset |
 
-### Example Backend .env
-```env
-AIML_API_KEY=sk-your-key-from-aimlapi-here
-PORT=3001
-NODE_ENV=development
-CORS_ORIGIN=http://localhost:3000,http://localhost:3001
-```
-
-### Example Frontend .env.local
-```env
-REACT_APP_API_URL=http://localhost:3001
-REACT_APP_MOVIES_CSV_PATH=/movies_dataset.csv
-```
 
 ## 🎓 Learning Resources
 
@@ -512,46 +371,6 @@ MIT License - Feel free to use this project for personal or commercial purposes.
 - **AiML API** - Gemma Model API (open-source, cost-effective LLM)
 - **React Team** - Framework and documentation
 - **Tailwind Labs** - CSS framework
-
-## 🌟 Features Roadmap
-
-- [ ] User authentication
-- [ ] Favorites/watchlist
-- [ ] Streaming service links
-- [ ] Movie recommendations by actor
-- [ ] Social sharing
-- [ ] Mobile app
-- [ ] Advanced filters
-- [ ] Movie ratings history
-
-## 🤝 Contributing
-
-Feel free to fork, improve, and submit pull requests!
-
-## 📞 Support & Help
-
-**Getting Started?**
-- 🪟 Windows: Run `start-windows.bat` for automatic setup
-- 🐧 Linux/Mac: Run `./start.sh` for automatic setup
-- 📖 Read [QUICKSTART.md](./QUICKSTART.md) for 5-minute setup
-
-**Having Issues?**
-1. Check [Troubleshooting](#-troubleshooting) section above
-2. Review [SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md) for detailed help
-3. Check [CHANGES_SUMMARY.md](./CHANGES_SUMMARY.md) to understand recent improvements
-4. See specific component docs:
-   - Backend: [cinematch-ai-proxy/README.md](./cinematch-ai-proxy/README.md)
-   - Frontend: [movie-recommender-app/README.md](./movie-recommender-app/README.md)
-
-**Common Questions:**
-- Q: "Where do I get an AiML API key?"  
-  A: Free at [www.aimlapi.com](https://www.aimlapi.com) - just sign up!
-- Q: "Does the AI remember what I said?"  
-  A: Yes! Full conversation history is maintained in the chat.
-- Q: "Can I deploy this?"  
-  A: Yes! See [Deployment](#-deployment) section above.
-- Q: "How many movies can it recommend?"  
-  A: From 10,000+ in the database, plus AI can create new suggestions based on your preferences.
 
 ---
 
