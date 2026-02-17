@@ -94,7 +94,7 @@ If you find this dataset useful, please consider **[upvoting on Kaggle](https://
 
 ### Why This Architecture?
 ✅ **Security**: API keys never exposed to browser  
-✅ **Efficiency**: Lightweight Gemma 3n 4B model (10x cheaper than GPT-4)  
+✅ **Efficiency**: Lightweight Gemma 3n 4B model - fast and cost-effective  
 ✅ **Context**: Full conversation history maintained for better recommendations  
 ✅ **Control**: Server-side validation prevents API abuse  
 ✅ **Scalability**: Easy to scale both frontend and backend independently  
@@ -259,7 +259,7 @@ For detailed setup, configuration, troubleshooting, and more:
 
 
 ### How It Works
-1. Frontend sends chat message to **http://localhost:3001/api/openai/chat**
+1. Frontend sends chat message to **http://localhost:3001/api/chat**
 2. Backend proxy validates the request
 3. Proxy forwards to **AiML API** with secure API key (never exposed to frontend)
 4. **Gemma 3n 4B** model processes the request

@@ -2,22 +2,22 @@
 
 [![Express](https://img.shields.io/badge/Express-4.18-blue)](https://expressjs.com)
 [![Node](https://img.shields.io/badge/Node-14+-green)](https://nodejs.org)
-[![OpenAI](https://img.shields.io/badge/OpenAI-API-orange)](https://openai.com)
+[![Gemma Model](https://img.shields.io/badge/AiML%20API-Gemma%203n%204B-green)](https://aimlapi.com)
 
-A **secure Express.js proxy server** for OpenAI API requests. Keeps your API key safe on the backend while serving the React frontend.
+A **secure Express.js proxy server** for AiML API requests (Gemma 3n 4B model). Keeps your API key safe on the backend while serving the React frontend.
 
 ## 🔐 Why a Proxy?
 
 **Direct Frontend Calls** ❌
 ```
-Browser → Exposes API Key → OpenAI API
+Browser → Exposes API Key → AiML API
 Risk: Anyone can see your API key in browser network tab
 Cost: API abuse from exposed keys
 ```
 
 **Proxy Pattern** ✅
 ```
-Browser → Proxy Server → (Hidden API Key) → OpenAI API
+Browser → Proxy Server → (Hidden API Key) → AiML API
 Safe: API key never exposed to frontend
 Secure: Can validate & limit requests
 Control: Easy to add rate limiting, logging, filtering
@@ -33,7 +33,7 @@ npm install
 ### 2. Configure API Key
 ```bash
 # Create .env file
-echo OPENAI_API_KEY=sk-your-key-here > .env
+echo AIML_API_KEY=your-key-here > .env
 echo PORT=3001 >> .env
 echo NODE_ENV=development >> .env
 ```
@@ -50,8 +50,8 @@ npm start
 ### Environment Variables (.env)
 
 ```env
-# Required - Your OpenAI API Key from https://platform.openai.com/api-keys
-OPENAI_API_KEY=sk-your-actual-key-here
+# Required - Your AiML API Key from https://www.aimlapi.com
+AIML_API_KEY=your-actual-key-here
 
 # Optional - Server Configuration
 PORT=3001                                    # Default: 3001
@@ -81,14 +81,14 @@ Check server status and API key configuration.
 
 ### Chat Completion
 ```http
-POST /api/openai/chat
+POST /api/chat
 Content-Type: application/json
 ```
 
 **Request:**
 ```json
 {
-  "model": "gpt-4o-mini",
+  "model": "gemma-3n-4b",
   "messages": [
     {
       "role": "system",
@@ -121,7 +121,7 @@ Content-Type: application/json
     "completion_tokens": 45,
     "total_tokens": 143
   },
-  "model": "gpt-4o-mini"
+  "model": "gemma-3n-4b"
 }
 ```
 
@@ -154,13 +154,13 @@ npm start
 ### Setup in React
 ```javascript
 // In your React component
-const response = await fetch('http://localhost:3001/api/openai/chat', {
+const response = await fetch('http://localhost:3001/api/chat', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: 'gpt-4o-mini',
+    model: 'gemma-3n-4b',
     messages: [
       {
         role: 'user',
@@ -196,15 +196,15 @@ REACT_APP_API_URL=http://localhost:3001
 ```json
 {
   "error": "API Key Error",
-  "message": "OpenAI API key not configured",
-  "solution": "Create a .env file with OPENAI_API_KEY=your-key-here"
+  "message": "AiML API key not configured",
+  "solution": "Create a .env file with AIML_API_KEY=your-key-here"
 }
 ```
 
-### 429 - Rate Limited (OpenAI)
+### 429 - Rate Limited (AiML API)
 ```json
 {
-  "error": "OpenAI API Request Failed",
+  "error": "AiML API Request Failed",
   "status": 429,
   "message": "Too many requests - please retry later"
 }
@@ -223,8 +223,8 @@ REACT_APP_API_URL=http://localhost:3001
 
 The server logs all requests with timestamps:
 ```
-📨 2024-02-17T10:30:00Z - POST /api/openai/chat
-🔄 Processing 3 messages with model: gpt-4o-mini
+📨 2024-02-17T10:30:00Z - POST /api/chat
+🔄 Processing 3 messages with model: gemma-3n-4b
 ✅ Response generated - Tokens used: 143
 ```
 
@@ -237,10 +237,10 @@ curl http://localhost:3001/health
 
 ### Send Chat Message
 ```bash
-curl -X POST http://localhost:3001/api/openai/chat \
+curl -X POST http://localhost:3001/api/chat \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-4o-mini",
+    "model": "gemma-3n-4b",
     "messages": [{"role": "user", "content": "Hi"}]
   }'
 ```
@@ -250,7 +250,7 @@ curl -X POST http://localhost:3001/api/openai/chat \
 ### Heroku
 ```bash
 git push heroku main
-heroku config:set OPENAI_API_KEY=sk-your-key
+heroku config:set AIML_API_KEY=your-key
 ```
 
 ### Vercel (Serverless)
@@ -286,13 +286,13 @@ Error: listen EADDRINUSE: address already in use :::3001
 
 ### API key not recognized
 ```
-Error: OpenAI API Error (401)
+Error: AiML API Error (401)
 ```
 **Solutions:**
 - Check API key doesn't have spaces in .env
-- Verify key starts with `sk-`
-- Go to OpenAI dashboard, regenerate key
-- Check account has credits
+- Verify key is from https://www.aimlapi.com
+- Go to AiML dashboard, check API key is valid
+- Check account has API credits
 
 ### CORS errors
 ```
@@ -308,14 +308,14 @@ CORS_ORIGIN=http://localhost:3000,https://yourdomain.com
 Response is null or incomplete
 ```
 **Checklist:**
-1. Check OpenAI API status: https://status.openai.com
+1. Check AiML API status: https://www.aimlapi.com
 2. Verify API key is valid
 3. No other errors in server logs
-4. Check OpenAI account has active credits
+4. Check AiML account has active API credits
 
 ## 📈 Performance
 
-- **Response time**: 2-5 seconds (depends on OpenAI)
+- **Response time**: 2-5 seconds (depends on AiML API latency)
 - **Concurrent requests**: 100+ (depends on Node.js memory)
 - **Auto-scaling**: Easy to add with load balancers
 - **Logging**: All requests logged with timestamps
@@ -323,7 +323,7 @@ Response is null or incomplete
 ## 📚 Resources
 
 - [Express.js Docs](https://expressjs.com)
-- [OpenAI API Docs](https://platform.openai.com/docs)
+- [AiML API Documentation](https://www.aimlapi.com/docs)
 - [CORS Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 - [dotenv Package](https://github.com/motdotla/dotenv)
 
