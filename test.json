@@ -1,0 +1,9 @@
+﻿{
+    "model":  "google/gemma-3n-e4b-it",
+    "messages":  [
+                     {
+                         "content":  "Hello",
+                         "role":  "user"
+                     }
+                 ]
+}
