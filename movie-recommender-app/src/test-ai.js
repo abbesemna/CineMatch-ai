@@ -50,8 +50,8 @@ async function testProxyServer() {
     const healthResponse = await fetch(`${PROXY_URL}/health`);
     const healthData = await healthResponse.json();
     console.log('✅ Status:', healthData.status);
-    console.log('✅ Service:', healthData.service);
-    
+        // Test 2: AiML API Connection
+        console.log('\n🤖 Test 2: AiML API Connection');
     // Test 2: OpenAI API Connection
     console.log('\n🤖 Test 2: OpenAI API Connection');
     const messages = [
@@ -62,11 +62,11 @@ async function testProxyServer() {
       {
         role: 'user',
         content: 'Say "hello" if you can hear me.'
-      }
+        const apiResponse = await fetch(`${PROXY_URL}/api/chat`, {
     ];
     
     const apiResponse = await fetch(`${PROXY_URL}/api/openai/chat`, {
-      method: 'POST',
+            model: 'gemma-3n-4b',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
@@ -96,11 +96,11 @@ async function testProxyServer() {
     
     for (const userMsg of TEST_MESSAGES) {
       console.log(`\n👤 User: ${userMsg}`);
-      
+          const response = await fetch(`${PROXY_URL}/api/chat`, {
       conversation.push({ role: 'user', content: userMsg });
       
       const response = await fetch(`${PROXY_URL}/api/openai/chat`, {
-        method: 'POST',
+              model: 'gemma-3n-4b',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
@@ -131,8 +131,8 @@ async function testProxyServer() {
     console.log('   4. Start chatting about movies!');
     
   } catch (error) {
-    console.error('\n❌ TEST FAILED');
-    console.error('Error:', error.message);
+        console.error('   2. Check that AIML_API_KEY is set in .env file');
+        console.error('   3. Verify your AiML API key is valid and has credits');
     console.error('\n🔧 Troubleshooting:');
     console.error('   1. Make sure proxy server is running: npm start');
     console.error('   2. Check that OPENAI_API_KEY is set in .env file');

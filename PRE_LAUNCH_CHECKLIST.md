@@ -14,16 +14,15 @@ Complete this checklist to ensure everything is properly configured before runni
   npm --version   # Should show 6.0.0 or higher
   ```
 
-- [ ] **OpenAI Account** created
-  - Go to https://platform.openai.com/
+- [ ] **AiML Account** created
+  - Go to https://www.aimlapi.com
   - Sign in or create account
 
 ## 🔑 API Key Setup
 
-- [ ] **OpenAI API Key Generated**
-  - Go to https://platform.openai.com/api-keys
-  - Click "Create new secret key"
-  - Copy the key (starts with `sk-`)
+- [ ] **AiML API Key Generated**
+  - Go to https://www.aimlapi.com
+  - Create or copy your API key from the dashboard
   - Save it somewhere safe
 
 ## 🔧 Configuration Setup
@@ -36,9 +35,9 @@ Complete this checklist to ensure everything is properly configured before runni
   ```
 
 - [ ] **.env file created**
-  - [ ] On Windows: Run `echo OPENAI_API_KEY=sk-your-key > .env`
+  - [ ] On Windows: Run `echo AIML_API_KEY=your-key > .env`
   - [ ] On Mac/Linux: Create manually or use provided script
-  - [ ] File contains: `OPENAI_API_KEY=sk-xxxxxxxxxxxxx`
+  - [ ] File contains: `AIML_API_KEY=your-api-key-here`
   - [ ] File contains: `PORT=3001`
 
 - [ ] **Verify .env file exists**

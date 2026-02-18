@@ -46,24 +46,24 @@ function App() {
         setIsLoading(true);
         const response = await fetch('/movies_dataset.csv');
         const csvText = await response.text();
-        
+
         const lines = csvText.split('\n');
         const moviesData = [];
         const seenIds = new Set();
-        
+
         for (let i = 1; i < lines.length; i++) {
           if (!lines[i].trim()) continue;
-          
+
           const values = parseCSVLine(lines[i]);
           if (values.length < 14) continue;
-          
+
           try {
             const movieId = parseInt(values[3]) || i;
-            
+
             // Skip duplicates
             if (seenIds.has(movieId)) continue;
             seenIds.add(movieId);
-            
+
             const movie = {
               id: movieId,
               title: values[10] || 'Untitled',
@@ -76,7 +76,7 @@ function App() {
               poster_path: values[8] || '',
               original_language: values[4] || 'en'
             };
-            
+
             if (movie.title && movie.title !== 'Untitled' && movie.title.length > 0) {
               moviesData.push(movie);
             }
@@ -84,7 +84,7 @@ function App() {
             continue;
           }
         }
-        
+
         console.log('✅ Loaded movies:', moviesData.length);
         setMovies(moviesData);
         setFilteredMovies(moviesData);
@@ -102,10 +102,10 @@ function App() {
     const result = [];
     let current = '';
     let inQuotes = false;
-    
+
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
-      
+
       if (char === '"') {
         inQuotes = !inQuotes;
       } else if (char === ',' && !inQuotes) {
@@ -150,11 +150,11 @@ function App() {
       if (moodConfig) {
         filtered = filtered.filter(movie => {
           if (!movie.genre_ids || movie.genre_ids.length === 0) return false;
-          
+
           // Check if movie has ANY negative genres - exclude it
           const hasNegativeGenre = movie.genre_ids.some(id => moodConfig.negative.includes(id));
           if (hasNegativeGenre) return false;
-          
+
           // Check if movie has AT LEAST ONE positive genre
           const hasPositiveGenre = movie.genre_ids.some(id => moodConfig.positive.includes(id));
           return hasPositiveGenre;
@@ -174,7 +174,7 @@ function App() {
           return genreName && genreName.toLowerCase().includes(query);
         });
         const yearMatch = movie.release_date && movie.release_date.includes(query);
-        
+
         // Weight title matches higher - prioritize movies where title starts with query
         return titleMatch || overviewMatch || genreMatch || yearMatch;
       });
@@ -189,7 +189,7 @@ function App() {
         if (aTitle && !bTitle) return -1;
         if (!aTitle && bTitle) return 1;
       }
-      
+
       // Then by score
       const scoreA = (a.vote_average * 0.7) + (a.popularity * 0.3 / 100);
       const scoreB = (b.vote_average * 0.7) + (b.popularity * 0.3 / 100);
@@ -198,7 +198,7 @@ function App() {
 
     setFilteredMovies(filtered);
     setCurrentPage(1); // Reset to first page on filter change
-    
+
     console.log(`📊 Filtered: ${filtered.length} movies from ${movies.length} total`);
   }, [selectedMood, searchQuery, movies]);
 
@@ -208,7 +208,7 @@ function App() {
     const endIndex = startIndex + MOVIES_PER_PAGE;
     setDisplayedMovies(filteredMovies.slice(startIndex, endIndex));
     setTotalPages(Math.ceil(filteredMovies.length / MOVIES_PER_PAGE));
-    
+
     // Scroll to top when page changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [filteredMovies, currentPage]);
@@ -225,7 +225,7 @@ function App() {
 
     try {
       // Call AiML API (Gemma 3n 4B) via the proxy server
-      const response = await fetch('http://localhost:3001/api/openai/chat', {
+      const response = await fetch('http://localhost:3001/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -245,32 +245,48 @@ function App() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error?.message || `API Error: ${response.status}`);
+        // Extract specific message from proxy or AiML error structure
+        const specificMessage = errorData.details?.message ||
+          errorData.details?.error?.message ||
+          errorData.message ||
+          `API Error: ${response.status}`;
+        throw new Error(specificMessage);
       }
 
       const data = await response.json();
-      const aiResponse = data.choices?.[0]?.message?.content || 
+      const aiResponse = data.choices?.[0]?.message?.content ||
         "I'd love to help you find great movies! What kind of mood are you in?";
-      
+
       setChatMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
-      
+
       // Clear previous recommendations and find new ones
       setAiRecommendations([]);
-      
+
       // Find matching movies from database
       setTimeout(() => {
         findMoviesFromResponse(aiResponse, currentQuery);
       }, 300);
-      
+
     } catch (error) {
       console.error('AI Error:', error);
-      
+
       const fallbackResponse = generateFallbackResponse(currentQuery);
-      setChatMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: fallbackResponse + ' (Using local recommendations - please ensure OpenAI proxy is running)'
+
+      // Check for common error types to provide better guidance
+      const errorMessage = error.message.toLowerCase();
+      let guidance = 'please ensure the proxy server is running';
+
+      if (errorMessage.includes('limit') || errorMessage.includes('quota') || errorMessage.includes('forbidden')) {
+        guidance = 'the API key has reached its limit - please update AIML_API_KEY in .env';
+      } else if (errorMessage.includes('key') || errorMessage.includes('auth')) {
+        guidance = 'API key issue - please check your .env configuration';
+      }
+
+      setChatMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `${fallbackResponse} (Note: ${guidance})`
       }]);
-      
+
       // Clear and suggest based on context
       setAiRecommendations([]);
       setTimeout(() => {
@@ -301,7 +317,7 @@ function App() {
       }
       return false;
     });
-    
+
     if (mentioned.length > 0) {
       const unique = Array.from(new Set(mentioned.map(m => m.id)))
         .map(id => mentioned.find(m => m.id === id));
@@ -315,7 +331,7 @@ function App() {
 
   const generateFallbackResponse = (query) => {
     const lowerQuery = query.toLowerCase();
-    
+
     if (lowerQuery.includes('funny') || lowerQuery.includes('comedy') || lowerQuery.includes('laugh')) {
       return "Great choice! Comedy is perfect for lifting your mood. Let me show you some hilarious options that'll have you laughing out loud!";
     } else if (lowerQuery.includes('scary') || lowerQuery.includes('horror') || lowerQuery.includes('thriller')) {
@@ -336,7 +352,7 @@ function App() {
   const suggestBasedOnContext = (query) => {
     const lowerQuery = query.toLowerCase();
     let genreIds = [];
-    
+
     if (lowerQuery.includes('funny') || lowerQuery.includes('comedy') || lowerQuery.includes('laugh')) {
       genreIds = [35, 16];
     } else if (lowerQuery.includes('scary') || lowerQuery.includes('horror') || lowerQuery.includes('thriller')) {
@@ -354,13 +370,13 @@ function App() {
     } else if (lowerQuery.includes('mystery') || lowerQuery.includes('detective')) {
       genreIds = [9648, 53];
     }
-    
+
     if (genreIds.length > 0) {
       const suggestions = movies
         .filter(m => m.genre_ids.some(id => genreIds.includes(id)))
         .sort((a, b) => (b.vote_average * 0.7 + b.popularity * 0.3) - (a.vote_average * 0.7 + a.popularity * 0.3))
         .slice(0, 6);
-      
+
       setAiRecommendations(suggestions);
     }
   };
@@ -413,7 +429,7 @@ function App() {
                   </p>
                 </div>
               </div>
-              
+
               <button
                 onClick={() => setShowChat(!showChat)}
                 className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-purple-500/50"
@@ -470,11 +486,10 @@ function App() {
                     setSelectedMood(selectedMood === mood.id ? null : mood.id);
                     setAiRecommendations([]); // Clear AI recommendations when changing mood
                   }}
-                  className={`p-4 rounded-xl transition-all duration-300 ${
-                    selectedMood === mood.id
+                  className={`p-4 rounded-xl transition-all duration-300 ${selectedMood === mood.id
                       ? `bg-gradient-to-br ${mood.gradient} shadow-lg transform scale-105`
                       : 'bg-white/5 hover:bg-white/10 border border-white/10'
-                  }`}
+                    }`}
                 >
                   <div className="text-xs font-medium">{mood.label}</div>
                 </button>
@@ -482,7 +497,7 @@ function App() {
             </div>
             {selectedMood && (
               <p className="text-sm text-gray-400 mt-3">
-                {moods.find(m => m.id === selectedMood)?.label} mood • 
+                {moods.find(m => m.id === selectedMood)?.label} mood •
                 {getMoodPositiveGenres(selectedMood).map(id => GENRE_MAP[id]).filter(Boolean).join(', ')}
               </p>
             )}
@@ -524,7 +539,7 @@ function App() {
                 Page {currentPage} of {totalPages} • {filteredMovies.length.toLocaleString()} total
               </span>
             </div>
-            
+
             {displayedMovies.length === 0 ? (
               <div className="text-center py-20 text-gray-400">
                 <Search className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -549,7 +564,7 @@ function App() {
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
-                    
+
                     <div className="flex items-center gap-2">
                       {[...Array(Math.min(5, totalPages))].map((_, i) => {
                         let pageNum;
@@ -562,16 +577,15 @@ function App() {
                         } else {
                           pageNum = currentPage - 2 + i;
                         }
-                        
+
                         return (
                           <button
                             key={i}
                             onClick={() => setCurrentPage(pageNum)}
-                            className={`px-4 py-2 rounded-lg transition-all ${
-                              currentPage === pageNum
+                            className={`px-4 py-2 rounded-lg transition-all ${currentPage === pageNum
                                 ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                                 : 'bg-white/5 hover:bg-white/10'
-                            }`}
+                              }`}
                           >
                             {pageNum}
                           </button>
@@ -616,16 +630,15 @@ function App() {
 
 // Movie Card Component
 const MovieCard = ({ movie, onClick, highlight }) => {
-  const posterUrl = movie.poster_path 
+  const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : `https://via.placeholder.com/300x450/1e293b/8b5cf6?text=${encodeURIComponent(movie.title.substring(0, 20))}`;
 
   return (
     <div
       onClick={() => onClick(movie)}
-      className={`group cursor-pointer transition-all duration-300 hover:-translate-y-2 ${
-        highlight ? 'ring-2 ring-pink-400 rounded-xl' : ''
-      }`}
+      className={`group cursor-pointer transition-all duration-300 hover:-translate-y-2 ${highlight ? 'ring-2 ring-pink-400 rounded-xl' : ''
+        }`}
     >
       <div className="relative overflow-hidden rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl">
         <div className="aspect-[2/3] overflow-hidden bg-slate-800">
@@ -638,7 +651,7 @@ const MovieCard = ({ movie, onClick, highlight }) => {
             }}
           />
         </div>
-        
+
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute bottom-0 p-4 w-full">
             <h3 className="font-bold text-sm mb-2 line-clamp-2">{movie.title}</h3>
@@ -668,7 +681,7 @@ const MovieCard = ({ movie, onClick, highlight }) => {
 
 // Movie Detail Modal
 const MovieModal = ({ movie, onClose }) => {
-  const posterUrl = movie.poster_path 
+  const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : `https://via.placeholder.com/300x450/1e293b/8b5cf6?text=${encodeURIComponent(movie.title.substring(0, 20))}`;
 
@@ -676,7 +689,7 @@ const MovieModal = ({ movie, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
-      <div 
+      <div
         className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-white/10"
         onClick={(e) => e.stopPropagation()}
       >
@@ -800,21 +813,20 @@ const ChatPanel = ({ messages, userMessage, setUserMessage, onSend, isTyping, on
             </div>
           </div>
         )}
-        
+
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`max-w-[80%] p-3 rounded-2xl ${
-                msg.role === 'user'
+              className={`max-w-[80%] p-3 rounded-2xl ${msg.role === 'user'
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                   : 'bg-white/10 backdrop-blur-xl border border-white/10'
-              }`}
+                }`}
             >
               <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
             </div>
           </div>
         ))}
-        
+
         {isTyping && (
           <div className="flex justify-start">
             <div className="bg-white/10 backdrop-blur-xl border border-white/10 p-3 rounded-2xl flex items-center space-x-2">
@@ -823,7 +835,7 @@ const ChatPanel = ({ messages, userMessage, setUserMessage, onSend, isTyping, on
             </div>
           </div>
         )}
-        
+
         <div ref={chatEndRef} />
       </div>
 

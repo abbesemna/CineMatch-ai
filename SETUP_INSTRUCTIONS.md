@@ -186,7 +186,7 @@ REACT_APP_MOVIES_CSV_PATH=/movies_dataset.csv
 ### Request Flow
 ```
 Client (Browser)
-    ↓ POST /api/openai/chat
+  ↓ POST /api/chat
 Proxy Server (Node.js)
     ↓ POST https://api.aimlapi.com/v1/chat/completions
     ↓ + Authorization: Bearer [HIDDEN API KEY]
@@ -274,7 +274,7 @@ Returns:
 
 ### Chat Completion (AiML API - Gemma 3n 4B)
 ```http
-POST http://localhost:3001/api/openai/chat
+POST http://localhost:3001/api/chat
 Content-Type: application/json
 
 {
@@ -382,7 +382,7 @@ If you encounter issues:
 Your CineMatch AI movie recommendation website is ready!
 
 - **Frontend**: http://localhost:3000
-- **API**: http://localhost:3001/api/openai/chat
+- **API**: http://localhost:3001/api/chat
 - **Health Check**: http://localhost:3001/health
 
 Enjoy finding the perfect movies through intelligent AI recommendations! 🍿🎬✨

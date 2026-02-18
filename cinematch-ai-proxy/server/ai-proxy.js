@@ -1,15 +1,12 @@
 /**
- * AI Proxy Server for CineMatch AI
- * Handles OpenAI API requests securely without exposing API keys to frontend
- * Provides real-time streaming responses for movie recommendations and chatbot
+ Handles AiML API (Gemma) requests securely without exposing API keys to frontend
+ Provides real-time streaming responses for movie recommendations and chatbot
  */
 
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-// Use native fetch (available in Node 18+)
-// No need to import anything - fetch is built-in
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -39,15 +36,15 @@ app.get('/health', (req, res) => {
     status: 'ok',
     service: 'CineMatch AI Proxy',
     timestamp: new Date().toISOString(),
-    apiKey: process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing'
+    apiKey: (process.env.AIML_API_KEY || process.env.OPENAI_API_KEY) ? '✅ Configured' : '❌ Missing'
   };
   console.log('✅ Health check passed');
   res.json(health);
 });
 
-/**
- * OpenAI Chat Completion Proxy
- * POST /api/openai/chat
+/*
+ * Chat Completion Proxy
+ * POST /api/chat
  * 
  * Secure proxy endpoint that:
  * - Accepts chat messages from the frontend
@@ -56,7 +53,7 @@ app.get('/health', (req, res) => {
  * 
  * NOTE: Gemma 3n 4B does not support system role - only user and assistant roles
  */
-app.post('/api/openai/chat', async (req, res) => {
+app.post('/api/chat', async (req, res) => {
   try {
     const { messages, temperature = 0.8, max_tokens = 1000 } = req.body;
     
@@ -65,7 +62,7 @@ app.post('/api/openai/chat', async (req, res) => {
 
     // === VALIDATION ===
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      console.warn('⚠️  Invalid messages format received');
+      console.warn(' Invalid messages format received');
       return res.status(400).json({ 
         error: 'Invalid or empty messages',
         message: 'Please provide an array of message objects'
@@ -73,9 +70,10 @@ app.post('/api/openai/chat', async (req, res) => {
     }
 
     // === API KEY CHECK ===
-    const apiKey = process.env.AIML_API_KEY;
+    // Support both AIML_API_KEY (preferred) and legacy OPENAI_API_KEY as a fallback
+    const apiKey = process.env.AIML_API_KEY || process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      console.error('❌ ERROR: AiML API key not configured');
+      console.error('ERROR: AiML API key not configured');
       return res.status(500).json({ 
         error: 'API Key Error',
         message: 'AiML API key not configured. Please set AIML_API_KEY in .env file',
@@ -83,7 +81,7 @@ app.post('/api/openai/chat', async (req, res) => {
       });
     }
 
-    console.log(`🔄 Processing ${messages.length} messages with model: google/gemma-3n-e4b-it`);
+    console.log(`Processing ${messages.length} messages with model: google/gemma-3n-e4b-it`);
 
     // === CALL AIML API VIA FETCH ===
     try {
@@ -103,7 +101,7 @@ app.post('/api/openai/chat', async (req, res) => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`❌ AiML API Error (${response.status}):`, errorText);
+        console.error(` AiML API Error (${response.status}):`, errorText);
         
         let errorDetails = {};
         try {
@@ -124,14 +122,14 @@ app.post('/api/openai/chat', async (req, res) => {
       
       // Validate response structure
       if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-        console.error('❌ Invalid AiML response structure:', data);
+        console.error(' Invalid AiML response structure:', data);
         return res.status(500).json({ 
           error: 'Invalid API Response',
           message: 'AiML API returned unexpected response format'
         });
       }
 
-      console.log(`✅ Response generated - Tokens used: ${data.usage?.total_tokens || 'unknown'}`);
+      console.log(` Response generated - Tokens used: ${data.usage?.total_tokens || 'unknown'}`);
       
       // Return the response to client
       res.json({
@@ -146,7 +144,7 @@ app.post('/api/openai/chat', async (req, res) => {
       });
 
     } catch (fetchError) {
-      console.error(`❌ AiML API Fetch Error:`, fetchError.message);
+      console.error(`AiML API Fetch Error:`, fetchError.message);
       
       return res.status(500).json({ 
         error: 'Network Error',
@@ -156,7 +154,7 @@ app.post('/api/openai/chat', async (req, res) => {
     }
 
   } catch (error) {
-    console.error('❌ Proxy Server Error:', error.message);
+    console.error(' Proxy Server Error:', error.message);
     res.status(500).json({ 
       error: 'Internal Server Error',
       message: error.message,
@@ -176,39 +174,38 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   console.warn(`⚠️  404 - Unknown endpoint: ${req.path}`);
   res.status(404).json({
     error: 'Not Found',
     message: `Endpoint ${req.path} does not exist`,
-    available: ['/health', '/api/openai/chat']
+    available: ['/health', '/api/chat']
   });
 });
 
 // === START SERVER ===
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(60));
-  console.log('🚀 CineMatch AI Proxy Server Started');
+  console.log('CineMatch AI Proxy Server Started');
   console.log('='.repeat(60));
-  console.log(`📍 Server running on: http://localhost:${PORT}`);
-  console.log(`🔗 Chat API endpoint: http://localhost:${PORT}/api/openai/chat`);
-  console.log(`💚 Health check: http://localhost:${PORT}/health`);
+  console.log(`Server running on: http://localhost:${PORT}`);
+  console.log(`Chat API endpoint: http://localhost:${PORT}/api/chat`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
   console.log('='.repeat(60));
   
   // === CHECK API KEY STATUS ===
-  if (!process.env.AIML_API_KEY) {
-    console.warn('\n⚠️  WARNING: AIML_API_KEY not configured!');
-    console.warn('📝 Setup Instructions:');
+  if (!(process.env.AIML_API_KEY || process.env.OPENAI_API_KEY)) {
+    console.warn('\n WARNING: AIML_API_KEY not configured!');
+    console.warn('Setup Instructions:');
     console.warn('   1. Create a .env file in the server directory');
     console.warn('   2. Add: AIML_API_KEY=your-actual-key-here');
     console.warn('   3. Get your key from: https://www.aimlapi.com\n');
   } else {
-    console.log('✅ AiML API key is configured and ready\n');
+    console.log('AiML API key is configured and ready\n');
   }
 
-  console.log('ℹ️  The frontend should call: http://localhost:3001/api/openai/chat');
-  console.log('ℹ️  Make sure the frontend is running on http://localhost:3000\n');
+  console.log('The frontend should call: http://localhost:3001/api/chat');
+  console.log(' Make sure the frontend is running on http://localhost:3000\n');
 });
 
 module.exports = app;

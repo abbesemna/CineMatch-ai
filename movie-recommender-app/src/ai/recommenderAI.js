@@ -1,6 +1,6 @@
 /**
  * Agentic AI Movie Recommender
- * Uses OpenAI API to provide conversational movie recommendations
+ * Uses AiML API (Gemma) via proxy to provide conversational movie recommendations
  */
 
 // Genre mapping for context
@@ -38,8 +38,8 @@ const MOOD_MAPPINGS = {
  */
 export async function sendAIMessage({ 
   apiKey, 
-  provider = 'openai',
-  model = 'gpt-4o-mini',
+  provider = 'aiml',
+  model = 'gemma-3n-4b',
   conversation = [], 
   userMessage, 
   movies = [],
@@ -56,8 +56,8 @@ export async function sendAIMessage({
       { role: 'user', content: userMessage }
     ];
 
-    // Call OpenAI API
-    const response = await callOpenAI({
+    // Call AiML API via proxy or direct (proxy preferred)
+    const response = await callAIService({
       apiKey,
       model,
       messages,
@@ -158,19 +158,17 @@ ${topMovies}
 }
 
 /**
- * Call OpenAI API
+ * Call AiML service (via proxy or direct)
  */
-async function callOpenAI({ apiKey, model, messages, temperature, maxTokens }) {
-  const apiUrl = apiKey === 'use-proxy' 
-    ? '/api/openai/chat' 
-    : 'https://api.openai.com/v1/chat/completions';
+async function callAIService({ apiKey, model, messages, temperature, maxTokens }) {
+  const apiUrl = apiKey === 'use-proxy'
+    ? '/api/chat'
+    : 'https://api.aimlapi.com/v1/chat/completions';
 
-  const headers = {
-    'Content-Type': 'application/json'
-  };
+  const headers = { 'Content-Type': 'application/json' };
 
-  // Only add authorization if not using proxy
-  if (apiKey !== 'use-proxy') {
+  // Only add Authorization header if calling external AiML API directly
+  if (apiKey && apiKey !== 'use-proxy') {
     headers['Authorization'] = `Bearer ${apiKey}`;
   }
 
@@ -187,11 +185,11 @@ async function callOpenAI({ apiKey, model, messages, temperature, maxTokens }) {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`OpenAI API error: ${response.status} - ${error}`);
+    throw new Error(`AI service error: ${response.status} - ${error}`);
   }
 
   const data = await response.json();
-  
+
   return {
     content: data.choices[0].message.content,
     finishReason: data.choices[0].finish_reason

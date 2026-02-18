@@ -57,7 +57,7 @@ if /i "%setup%"=="y" (
 REM Check/Create .env file - REQUIRED STEP
 echo.
 echo ============================================================
-echo  🔐  OpenAI API Configuration Required
+echo  🔐  AiML API Configuration Required
 echo ============================================================
 echo.
 
@@ -67,24 +67,24 @@ setlocal enabledelayedexpansion
 if exist "cinematch-ai-proxy\.env" (
     REM Check if file contains valid API key
     for /f "tokens=*" %%i in (cinematch-ai-proxy\.env) do (
-        if "%%i:~0,14%"=="OPENAI_API_KEY" set "has_key=1"
+        if "%%i:~0,13%"=="AIML_API_KEY" set "has_key=1"
     )
     
     if defined has_key (
-        echo ✓ .env file found with API key configured
+        echo ✓ .env file found with AiML API key configured
         goto env_ok
     )
 )
 
-echo ⚠️  IMPORTANT: You need an OpenAI API key to continue
+echo ⚠️  IMPORTANT: You need an AiML API key to continue
 echo.
-echo How to get your FREE API key:
-echo   1. Go to: https://platform.openai.com/api-keys
+echo How to get your FREE AiML API key:
+echo   1. Go to: https://www.aimlapi.com
 echo   2. Sign up or log in
-echo   3. Click "Create new secret key"
-echo   4. Copy the key (starts with "sk-")
+echo   3. Navigate to API Keys and create a new key
+echo   4. Copy the key
 echo.
-set /p apikey="Enter your OpenAI API key (sk-...): "
+set /p apikey="Enter your AiML API key: "
 
 if "!apikey!"=="" (
     echo.
@@ -100,7 +100,7 @@ echo.
 echo Creating .env file...
 if exist "cinematch-ai-proxy\.env" del /q cinematch-ai-proxy\.env
 (
-    echo OPENAI_API_KEY=!apikey!
+    echo AIML_API_KEY=!apikey!
     echo PORT=3001
     echo NODE_ENV=development
     echo CORS_ORIGIN=http://localhost:3000,http://localhost:3001
