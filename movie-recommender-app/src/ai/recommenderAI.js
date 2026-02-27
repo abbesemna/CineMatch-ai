@@ -36,19 +36,19 @@ const MOOD_MAPPINGS = {
 /**
  * Main function to send message to AI and get movie recommendations
  */
-export async function sendAIMessage({ 
-  apiKey, 
+export async function sendAIMessage({
+  apiKey,
   provider = 'aiml',
   model = 'gemma-3n-4b',
-  conversation = [], 
-  userMessage, 
+  conversation = [],
+  userMessage,
   movies = [],
-  maxResults = 6 
+  maxResults = 8
 }) {
   try {
     // Build system prompt with movie context
     const systemPrompt = buildSystemPrompt(movies);
-    
+
     // Build conversation history
     const messages = [
       { role: 'system', content: systemPrompt },
@@ -73,9 +73,9 @@ export async function sendAIMessage({
 
     // Extract movie recommendations intelligently
     const recommendations = await extractMovieRecommendations(
-      assistantText, 
-      userMessage, 
-      movies, 
+      assistantText,
+      userMessage,
+      movies,
       maxResults
     );
 
@@ -132,7 +132,7 @@ When users express emotions like "sad," "depressed," "lost," "anxious," "stresse
 - Remember what the user mentioned in previous messages
 
 **MOVIE RECOMMENDATIONS:**
-- When recommending movies, mention 3-6 specific titles naturally in your response
+- When recommending movies, mention 8 specific titles naturally in your response
 - Include movies from different decades when relevant
 - Consider ratings (prefer 7.0+) but also hidden gems
 - Match genre to mood intelligently
@@ -222,7 +222,7 @@ async function extractMovieRecommendations(aiResponse, userQuery, movies, maxRes
   const detectedGenres = detectGenresFromText(userQuery.toLowerCase());
 
   let genresToMatch = [];
-  
+
   if (detectedMood && MOOD_MAPPINGS[detectedMood]) {
     genresToMatch = MOOD_MAPPINGS[detectedMood].genres;
   } else if (detectedGenres.length > 0) {
@@ -286,7 +286,7 @@ function extractMovieTitlesFromText(text, movies) {
   // Check each movie title
   movies.forEach(movie => {
     const titleLower = movie.title.toLowerCase();
-    
+
     // Exact title match
     if (textLower.includes(titleLower)) {
       mentioned.push(movie);
@@ -378,7 +378,7 @@ function detectGenresFromText(text) {
   };
 
   const detected = [];
-  
+
   for (const [genreId, keywords] of Object.entries(genreKeywords)) {
     if (keywords.some(keyword => text.includes(keyword))) {
       detected.push(parseInt(genreId));

@@ -322,7 +322,7 @@ function App() {
       const unique = Array.from(new Set(mentioned.map(m => m.id)))
         .map(id => mentioned.find(m => m.id === id));
       console.log(`Found ${unique.length} movies in dataset from AI response`);
-      setAiRecommendations(unique);
+      setAiRecommendations(unique.slice(0, 8));
     } else {
       console.log('No exact matches found, suggesting by genre/mood');
       suggestBasedOnContext(query);
@@ -375,7 +375,7 @@ function App() {
       const suggestions = movies
         .filter(m => m.genre_ids.some(id => genreIds.includes(id)))
         .sort((a, b) => (b.vote_average * 0.7 + b.popularity * 0.3) - (a.vote_average * 0.7 + a.popularity * 0.3))
-        .slice(0, 6);
+        .slice(0, 8);
 
       setAiRecommendations(suggestions);
     }
