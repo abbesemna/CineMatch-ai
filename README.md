@@ -9,25 +9,21 @@ An intelligent movie recommendation platform powered by **Gemma 3n 4B** AI model
 
 ## ✨ Features
 
-### 🎭 Smart Movie Discovery
+### Smart Movie Discovery
 - **10,000+ TMDB Movies** - Comprehensive database with ratings & metadata
 - **Advanced Search** - Find by title, genre, year, description, and keywords
 - **Mood-Based Filtering** - Intelligent genre-to-mood mapping for discovery
 - **Real-Time Filtering** - Instant results with live pagination
 - **Movie Details** - Ratings, overview, genres, release date, and more
 
-### 🤖 AI-Powered Chatbot (Powered by Gemma 3n 4B)
+### AI-Powered Chatbot (Powered by Gemma 3n 4B)
 - **Conversational Interface** - Chat naturally about movies and moods
-- **Conversation Memory** - ✨ NEW! Remembers full chat history for context-aware responses
 - **Smart Recommendations** - AI extracts movie recommendations from natural text
 - **Real-Time Streaming** - Responsive answers that appear as they're generated
-- **Mood Understanding** - Comprehends emotional context and preferences
-- **Follow-up Questions** - Keep refining recommendations based on previous responses
-
 
 ## 📊 Dataset Information
 
-### 🎬 Kaggle Movies Dataset
+### Kaggle Movies Dataset
 
 This project uses the **[Movies Dataset](https://www.kaggle.com/datasets/saketsingh9728/movies-dataset)** from Kaggle, a comprehensive collection of 10,000+ movies extracted from TMDB.
 
@@ -53,7 +49,7 @@ This project uses the **[Movies Dataset](https://www.kaggle.com/datasets/saketsi
 **Support the Dataset Creator:**
 If you find this dataset useful, please consider **[upvoting on Kaggle](https://www.kaggle.com/datasets/saketsingh9728/movies-dataset)** to support the creator (Saket Singh) and help others discover it! 👍
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -83,7 +79,7 @@ If you find this dataset useful, please consider **[upvoting on Kaggle](https://
 
 
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 CineMatch-ai/
@@ -116,11 +112,10 @@ CineMatch-ai/
 ├── 📖 SETUP_INSTRUCTIONS.md         (Detailed setup guide)
 ├── 📖 README.md                     (This file)
 ├── 🚀 start-windows.bat             (Windows startup)
-├── 🚀 start.sh                      (Linux/Mac startup)
-└── QUICKSTART.md                    (Quick start guide)
+└── 🚀 start.sh                      (Linux/Mac startup)
 ```
 
-## 🚀 Quick Start (Choose Your OS)
+## Quick Start (Choose Your OS)
 
 ### 🪟 Windows
 ```bash
@@ -161,7 +156,7 @@ npm install
 npm start
 ```
 
-## 📋 Prerequisites
+## Prerequisites
 
 1. **Node.js** v14+ - [Download](https://nodejs.org/)
 2. **npm** or **yarn** - Comes with Node.js
@@ -182,10 +177,7 @@ npm start
 6. Restart the proxy server
 7. Test it's working: `curl http://localhost:3001/health`
 
-**Note**: Gemma 3n 4B is a lightweight, fast, and cost-effective open-source model. You get generous free credits to try it out!
-
-
-## 🎮 How to Use
+## How to Use
 
 ### Step 1: Access the Application
 1. Open http://localhost:3000 in your browser
@@ -212,7 +204,6 @@ npm start
 2. Type your movie preference naturally:
    - *"I'm feeling sad, recommend something uplifting"*
    - *"Show me some action-adventure movies from the 90s"*
-   - *"I loved Inception, what else would I like?"*
    - *"What are the best romantic comedies?"*
 3. The AI (powered by Gemma 3n 4B) will:
    - **Understand context** - Knows about movies and moods
@@ -241,14 +232,10 @@ npm start
 ### Backend (Proxy Server)
 - **Express.js** - Web framework
 - **Node.js** - JavaScript runtime
-- **Native Fetch API** - HTTP requests (Node 18+)
-- **dotenv** - Environment variable management
 
 ### AI & Data Layer
 - **AiML API** - Gemma 3n 4B model (cost-effective, fast, open-source LLM)
 - **Movie Dataset** - 10,000+ movies from TMDB via [Kaggle Dataset](https://www.kaggle.com/datasets/saketsingh9728/movies-dataset) (Up-to-date as of Feb 6, 2026)
-- **Intelligent Mood Mapping** - Genre-to-mood correlation system
-- **Conversation Memory** - Full message history preservation
 
 ## 🐛 Troubleshooting
 
@@ -303,14 +290,11 @@ npm start
 
 MIT License - Feel free to use this project for personal or commercial purposes.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- **TMDB** - Movie database (The Movie Database)
 - **Kaggle Dataset** - [Movies Dataset](https://www.kaggle.com/datasets/saketsingh9728/movies-dataset) by Saket Singh - 10K movies extracted from TMDB, perfect for data cleaning, preprocessing, feature engineering, and building recommendation systems. *Please upvote on Kaggle if you find the dataset relevant!*
 - **AiML API** - Gemma Model API (open-source, cost-effective LLM)
-- **React Team** - Framework and documentation
-- **Tailwind Labs** - CSS framework
-
+  
 ---
 
 **Made with ❤️ for movie lovers and AI enthusiasts**
