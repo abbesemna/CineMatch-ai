@@ -26,7 +26,7 @@ app.use(express.json({ limit: '10mb' }));
 
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`📨 ${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
@@ -36,9 +36,9 @@ app.get('/health', (req, res) => {
     status: 'ok',
     service: 'CineMatch AI Proxy',
     timestamp: new Date().toISOString(),
-    apiKey: (process.env.AIML_API_KEY || process.env.OPENAI_API_KEY) ? '✅ Configured' : '❌ Missing'
+    apiKey: (process.env.AIML_API_KEY || process.env.OPENAI_API_KEY) ? 'Configured' : 'Missing'
   };
-  console.log('✅ Health check passed');
+  console.log('Health check passed');
   res.json(health);
 });
 
@@ -56,14 +56,14 @@ app.get('/health', (req, res) => {
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages, temperature = 0.8, max_tokens = 1000 } = req.body;
-    
+
     // Use fixed model for AiML API
     const model = 'google/gemma-3n-e4b-it';
 
     // === VALIDATION ===
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       console.warn(' Invalid messages format received');
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: 'Invalid or empty messages',
         message: 'Please provide an array of message objects'
       });
@@ -74,7 +74,7 @@ app.post('/api/chat', async (req, res) => {
     const apiKey = process.env.AIML_API_KEY || process.env.OPENAI_API_KEY;
     if (!apiKey) {
       console.error('ERROR: AiML API key not configured');
-      return res.status(500).json({ 
+      return res.status(500).json({
         error: 'API Key Error',
         message: 'AiML API key not configured. Please set AIML_API_KEY in .env file',
         solution: 'Create a .env file with AIML_API_KEY=your-key-here'
@@ -102,7 +102,7 @@ app.post('/api/chat', async (req, res) => {
       if (!response.ok) {
         const errorText = await response.text();
         console.error(` AiML API Error (${response.status}):`, errorText);
-        
+
         let errorDetails = {};
         try {
           errorDetails = JSON.parse(errorText);
@@ -110,7 +110,7 @@ app.post('/api/chat', async (req, res) => {
           errorDetails = { raw_error: errorText };
         }
 
-        return res.status(response.status).json({ 
+        return res.status(response.status).json({
           error: 'AiML API Request Failed',
           status: response.status,
           details: errorDetails,
@@ -119,18 +119,18 @@ app.post('/api/chat', async (req, res) => {
       }
 
       const data = await response.json();
-      
+
       // Validate response structure
       if (!data.choices || !data.choices[0] || !data.choices[0].message) {
         console.error(' Invalid AiML response structure:', data);
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Invalid API Response',
           message: 'AiML API returned unexpected response format'
         });
       }
 
       console.log(` Response generated - Tokens used: ${data.usage?.total_tokens || 'unknown'}`);
-      
+
       // Return the response to client
       res.json({
         choices: [
@@ -145,8 +145,8 @@ app.post('/api/chat', async (req, res) => {
 
     } catch (fetchError) {
       console.error(`AiML API Fetch Error:`, fetchError.message);
-      
-      return res.status(500).json({ 
+
+      return res.status(500).json({
         error: 'Network Error',
         message: fetchError.message,
         details: 'Failed to connect to AiML API'
@@ -155,7 +155,7 @@ app.post('/api/chat', async (req, res) => {
 
   } catch (error) {
     console.error(' Proxy Server Error:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Internal Server Error',
       message: error.message,
       timestamp: new Date().toISOString()
@@ -167,7 +167,7 @@ app.post('/api/chat', async (req, res) => {
  * Error handling middleware
  */
 app.use((err, req, res, next) => {
-  console.error('❌ Unhandled Error:', err);
+  console.error('Unhandled Error:', err);
   res.status(500).json({
     error: 'Internal Server Error',
     message: err.message
@@ -175,7 +175,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((req, res) => {
-  console.warn(`⚠️  404 - Unknown endpoint: ${req.path}`);
+  console.warn(`404 - Unknown endpoint: ${req.path}`);
   res.status(404).json({
     error: 'Not Found',
     message: `Endpoint ${req.path} does not exist`,
@@ -192,7 +192,7 @@ app.listen(PORT, () => {
   console.log(`Chat API endpoint: http://localhost:${PORT}/api/chat`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log('='.repeat(60));
-  
+
   // === CHECK API KEY STATUS ===
   if (!(process.env.AIML_API_KEY || process.env.OPENAI_API_KEY)) {
     console.warn('\n WARNING: AIML_API_KEY not configured!');

@@ -85,7 +85,7 @@ function App() {
           }
         }
 
-        console.log('✅ Loaded movies:', moviesData.length);
+        console.log('Loaded movies:', moviesData.length);
         setMovies(moviesData);
         setFilteredMovies(moviesData);
         setIsLoading(false);
@@ -199,7 +199,7 @@ function App() {
     setFilteredMovies(filtered);
     setCurrentPage(1); // Reset to first page on filter change
 
-    console.log(`📊 Filtered: ${filtered.length} movies from ${movies.length} total`);
+    console.log(`Filtered: ${filtered.length} movies from ${movies.length} total`);
   }, [selectedMood, searchQuery, movies]);
 
   // PAGINATION - Update displayed movies when page changes
@@ -321,10 +321,10 @@ function App() {
     if (mentioned.length > 0) {
       const unique = Array.from(new Set(mentioned.map(m => m.id)))
         .map(id => mentioned.find(m => m.id === id));
-      console.log(`✅ Found ${unique.length} movies in dataset from AI response`);
+      console.log(`Found ${unique.length} movies in dataset from AI response`);
       setAiRecommendations(unique);
     } else {
-      console.log('ℹ️ No exact matches found, suggesting by genre/mood');
+      console.log('No exact matches found, suggesting by genre/mood');
       suggestBasedOnContext(query);
     }
   };
@@ -487,8 +487,8 @@ function App() {
                     setAiRecommendations([]); // Clear AI recommendations when changing mood
                   }}
                   className={`p-4 rounded-xl transition-all duration-300 ${selectedMood === mood.id
-                      ? `bg-gradient-to-br ${mood.gradient} shadow-lg transform scale-105`
-                      : 'bg-white/5 hover:bg-white/10 border border-white/10'
+                    ? `bg-gradient-to-br ${mood.gradient} shadow-lg transform scale-105`
+                    : 'bg-white/5 hover:bg-white/10 border border-white/10'
                     }`}
                 >
                   <div className="text-xs font-medium">{mood.label}</div>
@@ -583,8 +583,8 @@ function App() {
                             key={i}
                             onClick={() => setCurrentPage(pageNum)}
                             className={`px-4 py-2 rounded-lg transition-all ${currentPage === pageNum
-                                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                                : 'bg-white/5 hover:bg-white/10'
+                              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                              : 'bg-white/5 hover:bg-white/10'
                               }`}
                           >
                             {pageNum}
@@ -818,8 +818,8 @@ const ChatPanel = ({ messages, userMessage, setUserMessage, onSend, isTyping, on
           <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`max-w-[80%] p-3 rounded-2xl ${msg.role === 'user'
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                  : 'bg-white/10 backdrop-blur-xl border border-white/10'
+                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                : 'bg-white/10 backdrop-blur-xl border border-white/10'
                 }`}
             >
               <p className="text-sm whitespace-pre-wrap">{msg.content}</p>

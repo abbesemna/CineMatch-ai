@@ -2,7 +2,7 @@
 
 A full-featured movie recommendation website with AI chatbot powered by AiML API (Gemma 3n 4B model).
 
-## 🎯 Project Architecture
+## Project Architecture
 
 ```
 ┌─────────────────────────┐
@@ -31,13 +31,13 @@ A full-featured movie recommendation website with AI chatbot powered by AiML API
 └─────────────────────────┘
 ```
 
-## 📋 Prerequisites
+## Prerequisites
 
 - **Node.js** v14+ ([Download](https://nodejs.org/))
 - **npm** or **yarn** package manager
 - **AiML API Key** ([Get free key](https://www.aimlapi.com))
 
-## 🚀 Quick Start (5 Minutes)
+## Quick Start (5 Minutes)
 
 ### 1. Get Your AiML API Key
 
@@ -67,9 +67,9 @@ npm start
 
 You should see:
 ```
-🚀 CineMatch AI Proxy Server Started
+CineMatch AI Proxy Server Started
 📍 Server running on: http://localhost:3001
-✅ AiML API key is configured and ready
+AiML API key is configured and ready
 ```
 
 **Keep this terminal open!** The server must run constantly.
@@ -94,23 +94,23 @@ npm start
 
 The app will open automatically at `http://localhost:3000`
 
-## ✨ Features
+## Features
 
-### 🎬 Movie Browsing
+### Movie Browsing
 - **10,000+ movies** from TMDB dataset
 - **Smart search** by title, genre, year, or description
 - **Mood-based filtering** with intelligent genre matching
 - **Rating & popularity** sorting
 - **Responsive grid** layout with poster images
 
-### 🤖 AI Chatbot
+### AI Chatbot
 - **Real-time conversation** about movies
 - **Mood-aware** recommendations
 - **Context memory** across multiple messages
 - **Natural responses** using Gemma 3n 4B model
 - **Movie extraction** - automatically finds mentioned movies
 
-### 🎭 Mood Selection
+### Mood Selection
 - Happy, Sad/Melancholic, Excited, Relaxed
 - Thrilled (Horror/Thriller), Romantic
 - Thoughtful, Adventurous
@@ -123,7 +123,7 @@ The app will open automatically at `http://localhost:3000`
 - Mood context awareness
 - Conversation history
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 project-ai/
@@ -197,7 +197,7 @@ Proxy Server
 Client receives recommendations
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### "Cannot connect to proxy server"
 ```
@@ -235,10 +235,10 @@ Error: AiML API Error (401)
 Issues: Chat sending but no response
 ```
 **Checklist:**
-1. ✅ Is proxy server running on port 3001?
-2. ✅ Is API key set in .env?
-3. ✅ Check browser console (F12) for errors
-4. ✅ Check server terminal for error messages
+1. Is proxy server running on port 3001?
+2. Is API key set in .env?
+3. Check browser console (F12) for errors
+4. Check server terminal for error messages
 
 ### Movies not loading
 ```
@@ -257,7 +257,7 @@ No 'Access-Control-Allow-Origin' header
 **Solution:** Make sure proxy server CORS is configured correctly
 In `ai-proxy.js`, verify CORS origins include your frontend URL.
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### Health Check
 ```http
@@ -316,7 +316,7 @@ Returns:
 | `NODE_ENV` | ✅ | ❌ | NO | development |
 | `REACT_APP_API_URL` | ❌ | ✅ | NO | http://localhost:3001 |
 
-## 🎮 Usage Examples
+## Usage Examples
 
 ### Via Chat Interface
 ```
@@ -377,12 +377,10 @@ If you encounter issues:
 4. **Check network**: Ensure proxy server is running
 5. **Clear cache**: Hard refresh browser cache
 
-## 🎉 You're All Set!
-
 Your CineMatch AI movie recommendation website is ready!
 
 - **Frontend**: http://localhost:3000
 - **API**: http://localhost:3001/api/chat
 - **Health Check**: http://localhost:3001/health
 
-Enjoy finding the perfect movies through intelligent AI recommendations! 🍿🎬✨
+Enjoy finding the perfect movies through intelligent AI recommendations!

@@ -13,7 +13,7 @@ echo.
 REM Check if Node.js is installed
 node --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ ERROR: Node.js is not installed!
+    echo ERROR: Node.js is not installed!
     echo.
     echo Please download and install Node.js from:
     echo https://nodejs.org/
@@ -30,22 +30,22 @@ REM Ask if user wants to setup dependencies
 set /p setup="Install dependencies? (y/n) [default: y]: " || set setup=y
 if /i "%setup%"=="y" (
     echo.
-    echo 📦 Installing proxy server dependencies...
+    echo Installing proxy server dependencies...
     cd cinematch-ai-proxy
     call npm install
     if errorlevel 1 (
-        echo ❌ Failed to install proxy dependencies
+        echo Failed to install proxy dependencies
         pause
         exit /b 1
     )
     cd ..
     
     echo.
-    echo 📦 Installing frontend dependencies...
+    echo Installing frontend dependencies...
     cd movie-recommender-app
     call npm install
     if errorlevel 1 (
-        echo ❌ Failed to install frontend dependencies
+        echo Failed to install frontend dependencies
         pause
         exit /b 1
     )
@@ -57,7 +57,7 @@ if /i "%setup%"=="y" (
 REM Check/Create .env file - REQUIRED STEP
 echo.
 echo ============================================================
-echo  🔐  AiML API Configuration Required
+echo  AiML API Configuration Required
 echo ============================================================
 echo.
 
@@ -76,7 +76,7 @@ if exist "cinematch-ai-proxy\.env" (
     )
 )
 
-echo ⚠️  IMPORTANT: You need an AiML API key to continue
+echo IMPORTANT: You need an AiML API key to continue
 echo.
 echo How to get your FREE AiML API key:
 echo   1. Go to: https://www.aimlapi.com
@@ -88,7 +88,7 @@ set /p apikey="Enter your AiML API key: "
 
 if "!apikey!"=="" (
     echo.
-    echo ❌ ERROR: No API key provided
+    echo ERROR: No API key provided
     echo.
     echo You MUST provide an API key to use CineMatch AI
     echo.
@@ -107,7 +107,7 @@ if exist "cinematch-ai-proxy\.env" del /q cinematch-ai-proxy\.env
 ) > cinematch-ai-proxy\.env
 
 if errorlevel 1 (
-    echo ❌ Failed to create .env file
+    echo Failed to create .env file
     pause
     exit /b 1
 )
@@ -133,19 +133,19 @@ timeout /t 3 /nobreak
 REM Start React app
 echo.
 echo Starting React frontend on port 3000...
-echo ℹ️  This may take 10-15 seconds on first run
+echo This may take 10-15 seconds on first run
 start "CineMatch AI Frontend" cmd /k "cd /d %cd%\movie-recommender-app && npm start"
 
 echo.
 echo ============================================================
-echo  ✓ Starting up!
+echo  Starting up!
 echo ============================================================
 echo.
 echo 📍 Proxy Server: http://localhost:3001
 echo 🌐 Frontend App: http://localhost:3000
 echo.
-echo ℹ️  Both windows will open automatically
-echo ℹ️  Keep both running while using the app
-echo ℹ️  Close the windows to stop the servers
+echo  Both windows will open automatically
+echo  Keep both running while using the app
+echo  Close the windows to stop the servers
 echo.
 pause
