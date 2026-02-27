@@ -9,21 +9,21 @@ An intelligent movie recommendation platform powered by **Gemma 3n 4B** AI model
 
 ## ✨ Features
 
-### 🎭 Smart Movie Discovery
+### Smart Movie Discovery
 - **10,000+ TMDB Movies** - Comprehensive database with ratings & metadata
 - **Advanced Search** - Find by title, genre, year, description, and keywords
 - **Mood-Based Filtering** - Intelligent genre-to-mood mapping for discovery
 - **Real-Time Filtering** - Instant results with live pagination
 - **Movie Details** - Ratings, overview, genres, release date, and more
 
-### 🤖 AI-Powered Chatbot (Powered by Gemma 3n 4B)
+### AI-Powered Chatbot (Powered by Gemma 3n 4B)
 - **Conversational Interface** - Chat naturally about movies and moods
 - **Smart Recommendations** - AI extracts movie recommendations from natural text
 - **Real-Time Streaming** - Responsive answers that appear as they're generated
 
 ## 📊 Dataset Information
 
-### 🎬 Kaggle Movies Dataset
+### Kaggle Movies Dataset
 
 This project uses the **[Movies Dataset](https://www.kaggle.com/datasets/saketsingh9728/movies-dataset)** from Kaggle, a comprehensive collection of 10,000+ movies extracted from TMDB.
 
@@ -49,7 +49,7 @@ This project uses the **[Movies Dataset](https://www.kaggle.com/datasets/saketsi
 **Support the Dataset Creator:**
 If you find this dataset useful, please consider **[upvoting on Kaggle](https://www.kaggle.com/datasets/saketsingh9728/movies-dataset)** to support the creator (Saket Singh) and help others discover it! 👍
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -79,7 +79,7 @@ If you find this dataset useful, please consider **[upvoting on Kaggle](https://
 
 
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 CineMatch-ai/
@@ -115,7 +115,7 @@ CineMatch-ai/
 └── 🚀 start.sh                      (Linux/Mac startup)
 ```
 
-## 🚀 Quick Start (Choose Your OS)
+## Quick Start (Choose Your OS)
 
 ### 🪟 Windows
 ```bash
@@ -156,7 +156,7 @@ npm install
 npm start
 ```
 
-## 📋 Prerequisites
+## Prerequisites
 
 1. **Node.js** v14+ - [Download](https://nodejs.org/)
 2. **npm** or **yarn** - Comes with Node.js
@@ -177,7 +177,7 @@ npm start
 6. Restart the proxy server
 7. Test it's working: `curl http://localhost:3001/health`
 
-## 🎮 How to Use
+## How to Use
 
 ### Step 1: Access the Application
 1. Open http://localhost:3000 in your browser
