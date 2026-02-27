@@ -18,12 +18,8 @@ An intelligent movie recommendation platform powered by **Gemma 3n 4B** AI model
 
 ### 🤖 AI-Powered Chatbot (Powered by Gemma 3n 4B)
 - **Conversational Interface** - Chat naturally about movies and moods
-- **Conversation Memory** - ✨ NEW! Remembers full chat history for context-aware responses
 - **Smart Recommendations** - AI extracts movie recommendations from natural text
 - **Real-Time Streaming** - Responsive answers that appear as they're generated
-- **Mood Understanding** - Comprehends emotional context and preferences
-- **Follow-up Questions** - Keep refining recommendations based on previous responses
-
 
 ## 📊 Dataset Information
 
