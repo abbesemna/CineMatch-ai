@@ -12,9 +12,9 @@ An intelligent movie recommendation platform powered by **Gemma 3n 4B** AI model
 ### 🎭 Smart Movie Discovery
 - **10,000+ TMDB Movies** - Comprehensive database with ratings & metadata
 - **Advanced Search** - Find by title, genre, year, description, and keywords
+- **Mood-Based Filtering** - Intelligent genre-to-mood mapping for discovery
 - **Real-Time Filtering** - Instant results with live pagination
 - **Movie Details** - Ratings, overview, genres, release date, and more
-- **Responsive Design** - Works on desktop, tablet, and mobile
 
 ### 🤖 AI-Powered Chatbot (Powered by Gemma 3n 4B)
 - **Conversational Interface** - Chat naturally about movies and moods
@@ -24,18 +24,6 @@ An intelligent movie recommendation platform powered by **Gemma 3n 4B** AI model
 - **Mood Understanding** - Comprehends emotional context and preferences
 - **Follow-up Questions** - Keep refining recommendations based on previous responses
 
-### 🎨 Mood-Based Filtering
-- 8+ mood categories (Happy, Excited, Relaxed, Romantic, Sad, Scared, Angry, Contemplative)
-- Intelligent genre-to-mood mapping
-- One-click filtering for quick discovery
-- Combined with search for precise filtering
-
-### 🔐 Secure Architecture
-- **Server-Side API Keys** - AiML API key never exposed to browser
-- **Request Validation** - Comprehensive input validation & sanitization
-- **CORS Protection** - Configurable allowed origins
-- **Error Handling** - Clear error messages for debugging
-- **Production-Ready** - Built-in logging and monitoring capabilities
 
 ## 📊 Dataset Information
 
@@ -92,12 +80,6 @@ If you find this dataset useful, please consider **[upvoting on Kaggle](https://
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Why This Architecture?
-✅ **Security**: API keys never exposed to browser  
-✅ **Efficiency**: Lightweight Gemma 3n 4B model - fast and cost-effective  
-✅ **Context**: Full conversation history maintained for better recommendations  
-✅ **Control**: Server-side validation prevents API abuse  
-✅ **Scalability**: Easy to scale both frontend and backend independently  
 
 
 
@@ -202,17 +184,6 @@ npm start
 
 **Note**: Gemma 3n 4B is a lightweight, fast, and cost-effective open-source model. You get generous free credits to try it out!
 
-## 📖 Full Setup Guide & Documentation
-
-For detailed setup, configuration, troubleshooting, and more:
-
-- 📘 **[SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md)** - Complete step-by-step setup guide
-- 🚀 **[QUICKSTART.md](./QUICKSTART.md)** - 5-minute quick start
-- 🔄 **[CHANGES_SUMMARY.md](./CHANGES_SUMMARY.md)** - What's new and fixed (architecture improvements)
-- ✅ **[IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md)** - Feature checklist
-- ⚡ **[PRE_LAUNCH_CHECKLIST.md](./PRE_LAUNCH_CHECKLIST.md)** - Pre-deployment checklist
-- 📁 **[cinematch-ai-proxy/README.md](./cinematch-ai-proxy/README.md)** - Backend server documentation
-- 📁 **[movie-recommender-app/README.md](./movie-recommender-app/README.md)** - Frontend app documentation
 
 ## 🎮 How to Use
 
@@ -258,13 +229,6 @@ For detailed setup, configuration, troubleshooting, and more:
 - Read complete movie information (ratings, overview, cast)
 
 
-### How It Works
-1. Frontend sends chat message to **http://localhost:3001/api/chat**
-2. Backend proxy validates the request
-3. Proxy forwards to **AiML API** with secure API key (never exposed to frontend)
-4. **Gemma 3n 4B** model processes the request
-5. Response streams back to frontend in real-time
-6. Full conversation history is maintained and sent with each request for context awareness
 
 ## 🛠️ Technology Stack
 
@@ -278,7 +242,6 @@ For detailed setup, configuration, troubleshooting, and more:
 - **Express.js** - Web framework
 - **Node.js** - JavaScript runtime
 - **Native Fetch API** - HTTP requests (Node 18+)
-- **CORS** - Cross-origin request handling
 - **dotenv** - Environment variable management
 
 ### AI & Data Layer
@@ -321,34 +284,10 @@ For detailed setup, configuration, troubleshooting, and more:
 - Try hard refreshing the page (Ctrl+Shift+R)
 - Check that the CSV file size is reasonable (~5-10MB)
 
-### Port Already in Use
-```bash
-# Windows - Find and kill process on port 3001
-netstat -ano | findstr :3001
-taskkill /PID <PID> /F
-
-# Linux/Mac - Find and kill process on port 3001
-lsof -ti:3001 | xargs kill -9
-```
 
 
 
 
-## 📝 Environment Variables
-
-### Backend (.env in cinematch-ai-proxy)
-| Variable | Required | Default | Purpose |
-|----------|----------|---------|---------|
-| `AIML_API_KEY` | ✅ YES | N/A | AiML API authentication key (get free at aimlapi.com) |
-| `PORT` | NO | 3001 | Server port to listen on |
-| `NODE_ENV` | NO | development | Environment type (development/production) |
-| `CORS_ORIGIN` | NO | localhost:3000 | Allowed frontend URLs (comma-separated) |
-
-### Frontend (.env.local in movie-recommender-app)
-| Variable | Required | Default | Purpose |
-|----------|----------|---------|---------|
-| `REACT_APP_API_URL` | NO | http://localhost:3001 | Backend proxy server URL |
-| `REACT_APP_MOVIES_CSV_PATH` | NO | /movies_dataset.csv | Path to movies dataset |
 
 
 ## 🎓 Learning Resources

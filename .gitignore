@@ -24,3 +24,7 @@ dist/
 
 # OS
 Thumbs.db
+
+# Documentation
+/doc/*
+!/doc/SETUP_INSTRUCTIONS.md
